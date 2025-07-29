@@ -25,6 +25,10 @@ virtual catalog of min lexical solution grids. ....
 
 The corresponding DLLs must be in a directory used to load programs.
 
+====================================================================
+the package functions are using my "standard" frame and have usually one entry file, one output file and a possible redirection of cout where can be seen a short message if the process fails.
+
+As this is mainly for steps in a wider process, the entry file must fit with the process called and the process stops in case of anomaly seen.
 
 
 
