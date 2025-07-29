@@ -4,7 +4,7 @@ handling canonical names for puzzles
 This repository is created to process names of sudoku puzzles.
 
 In any process working with plenty of sudokus, the same issue appears :
-Is this sudoku a morph of a preious one. 
+Is this sudoku a morph of a previous one. 
 
 Cleaning the redundancy is important
 to save processing time
@@ -18,10 +18,57 @@ As the solution grid can have auto morphs, an additionnal condition is to use th
 
 Having the ED (essentially different) puzzle, next point is "how do you show it to have a short record.
 
-We know that we have 5 472 730 538 ED solution grids. I posted a DLL giving the solution grid for a given rank in the min lexical catalog.
+We know that we have 5 472 730 538 ED solution grids. 
+I posted a DLL giving the solution grid for a given rank in the min lexical catalog and reverse.
 
 This is the start to define a short canonical name.
-Having the solution grid reduced to this number, the puzzle can be definet by the given cells, a 81 bits field.
+Having the solution grid reduced to this number, the puzzle can be defined by the given cells, a 81 bits field.
+Next point is "how can we print this 81 sequence of binary values.
+
+The hexadecimal print is well known to show a 4 bits sequence. The print uses 16 characters, 0-9 plus a-f or A-F.
+The print will be shorter if we use more printable charaters.
+
+If we stick to the 128 first ascii values, the maximum that we can do is to use 64 characters for a 6 bits sub field.
+This is what is done here with the following sequence 
+0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz{}
+
+These 64 ptintable charaters are here in increasin ascii value, giving room to the use of many programs sa the sort program.
+
+Then, the 81 bit field can be printed as 14 characters
+6x13= 78 bits, the last characters with 3 bits used.
+
+This is the first possible name for a puzzle
+
+10 characters for the rank of the solution grid
+14 characters for the bi field.
+plus one separator to have the file easy to process.
+
+This "relatively short" name has a big interest; the solution grid rank is explicitely given.
+
+If a very short name is wanted, we can switch easily to the second name, a 19 bytes name.
+the solution grid rank uses 33 bits the bit field 81 bits
+This is a total of 114 bits = 19x6
+These 114 bits are printed in the same way.
+
+Note: such names in a file sorted are compressed very efficiently by the .zip process.
+
+
+This small pacckage do the main functions needed to use the naming process.
+The code is relatively short, but uses DLLs of very big size do do some key operation as 
+
+back force solver
+grid morphing to minlex
+virtual catalog of min lexical solution grids.
+....
+
+The corresponding DLL must be in a directory 
+
+
+
+
+
+
+
 
 
 
