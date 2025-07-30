@@ -72,24 +72,30 @@ sku06_names for theprogram sku06_names.exe
 >zzz redirection for the "cout" file
 
 ==================================================================
-function -c1
+function -c0
 
 entry any valid puzzle 
-
-output name  in fix format "rrrrrrrrrr bbbbbbbbbbbbbb" length 10+1+14=25
-
--v4-n is an optional output format modifier
-
--v4-1 output "r;bbbb" where the rank r has a variable length
-
--v4-2 output "p;r;bbbb" where the puzzle in minlex morph is in output
 
 The process is cancelled if a wrong puzzle is seen 
 
 To limit the risk of an endless brute force, a minimum of 17 clues is required, but the caller should take care not to send puzzles with plenty of solutions.
 
+standard output name  in fix format "rrrrrrrrrr bbbbbbbbbbbbbb" length 10+1+14=25
 
+-v4-n is an output request for a second file
 
+  puzzle in canonical morph;rank;bitfield
+
+  =========================
+
+  function -c1 unused
+
+  ==============================================================
+  function -c2
+
+  convert rank + bit field to 19 bytes
+
+  
 
 
 
