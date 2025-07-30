@@ -63,7 +63,11 @@ sku06_names for theprogram sku06_names.exe
 
 -ixxx where xxx is the file name here _tmissingsp_rat.txt 
 
--oyyyy thhe root file name for output; here the output will be yyy_file1.txt (only one file in output)
+-oyyyy thhe root file name for output; 
+
+  mostoften the output will be yyy_file1.txt (only one file in output)
+
+  but in one process, a second output file  yyy_file2.txt can be delivered
 
 >zzz redirection for the "cout" file
 
@@ -81,7 +85,10 @@ output name  in fix format "rrrrrrrrrr bbbbbbbbbbbbbb" length 10+1+14=25
 -v4-2 output "p;r;bbbb" where the puzzle in minlex morph is in output
 
 The process is cancelled if a wrong puzzle is seen 
-To limit the risk of an endless brute force
+
+To limit the risk of an endless brute force, a minimum of 17 clues is required, but the caller should take care not to send puzzles with plenty of solutions.
+
+
 
 
 
