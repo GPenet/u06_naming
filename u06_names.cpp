@@ -5,56 +5,17 @@ contains the entry G0() called by main
 */
 #define _CRT_SECURE_NO_DEPRECATE
 #define _CRT_SECURE_NO_WARNINGS
-#define INCLUDE_DEBUGGING_CODE
-#define SK0FDEBUGGING
 #include <stdlib.h>
 #include <sys/timeb.h>
 using namespace std;
 // nothing to do here
 #include "maingp_cpp.h"
 #include "sk0\sk0_cpp_lookup.h"
-#include "sk0\sk0_cpp_floors.h"
-#include "sk0\sk0_cpp_debugging.h"
-#include "bf128.h"
-#include "bf128_cpp.h"
-
 #include "dllusers\u05skvcar_user.h"
 #include "dllusers\u06skbf_user.h"
 #include "dllusers\skgrid_minlex_user.h"
 
 
-#define DO27CtoI(S,D) for (int i = 0; i < 27; i++)D[i] = S[i] - '1';
-#define DO27ItoC(S,D) for (int i = 0; i < 27; i++)D[i] = S[i] + '1';
-#define DO81CtoI(S,D) for (int i = 0; i < 81; i++)D[i] = S[i] - '1';
-#define DO81ItoC(S,D) for (int i = 0; i < 81; i++)D[i] = S[i] + '1';
-
-
-void Fout_p_R_Bin(char* puz,uint64_t r,char * zbit) {// print rank bin depending on option
-	switch (sgo.vx[4]) {
-	case 0:// rank
-		fout1 << r << endl;
-		return;
-	case 1:// rank;bits
-		fout1 << r << ";" << zbit << endl;
-		return;
-	case 2:
-		fout1.width(10);
-		fout1 << r;
-		fout1<<" " << zbit << endl;
-		return;
-	case 3:
-		fout1.width(10);
-		fout1 << r << endl;
-		return;
-	case 11: // puz;rank;bits
-		fout1 << puz << ";" << r << ";" << zbit << endl;
-		return;
-	case 12:
-		cout << r << ";" << zbit << " " << puz << endl;
-		return;
-	}
-
-}
 
 /* ascii values
 0-9		48-57		0-9
@@ -85,7 +46,6 @@ int Get6Bits(int i, char* bf14) {
 	else v = 0; // not valid put to empty
 	return v;
 }
-
 void Expand14to81(char* puz, char* bf14, char * sol) {
 	int k = 0;
 	for (int i = 0, k = 0; i < 14; i++) {// 6 bits to expand
@@ -98,52 +58,8 @@ void Expand14to81(char* puz, char* bf14, char * sol) {
 	}
 }
 
-void CountPairPerBox(int* gbit, int* gbitd, int fl, int* b) {
-	memset(b, 0, 4 * 9); // all count to 0
-	for (int iband = 0, ic = 0; iband < 3; iband++) {
-		for (int irow = 0; irow < 3; irow++) {
-			for (int imini = 0; imini < 3; imini++) {
-				int n = 0;
-				for (int i = 0; i < 3; i++, ic++) {// 3 cells
-					if (gbit[ic] & fl)n++;
-				}
-				if (n >= 2)b[3 * iband + imini]++;
-			}
-		}
-	}
-	for (int iband = 0, ic = 0; iband < 3; iband++) {
-		for (int irow = 0; irow < 3; irow++) {
-			for (int imini = 0; imini < 3; imini++) {
-				int n = 0;
-				for (int i = 0; i < 3; i++, ic++) {// 3 cells
-					if (gbitd[ic] & fl)n++;
-				}
-				if (n >= 2)b[3 * imini + iband]++;
-			}
-		}
-	}
-}
 
-void PrintFl(int* gbit, int* g, int fl) {
-	for (int iband = 0, ic = 0; iband < 3; iband++) {
-		for (int irow = 0; irow < 3; irow++) {
-			for (int imini = 0; imini < 3; imini++) {
-				for (int i = 0; i < 3; i++, ic++) {// 3 cells
-					if (gbit[ic] & fl)cout << g[ic]+1;
-					else cout <<'.';
-				}
-				cout << "  ";
-			}
-			cout << endl;
-		}
-		cout << endl;
-	}
-	cout << endl;
-}
-
-
-
-//============================================================================================ process
+//============================================================================================ processes
 void C0() {
 	cout << " C0_ find canonical for a file of sudokus sgo.vx[5]= " << sgo.vx[5] << endl;
 	char* ze = finput.ze, zem[82], zes[200], zem2[82]; zem[81] = 0; zem2[81] = 0;
@@ -221,7 +137,7 @@ void C2() {
 			z19[i + 5] = bit6[rx];
 			rx = ry >> 3;
 		}
-		fout1 << z19 << endl;
+		fout1 <<z19<<";" << ze << endl;
 	}
 	cout << "end of file   " << endl;
 }
@@ -246,11 +162,11 @@ void C3() {
 			rx = ry & 7;
 		}
 		zb[13] = bit6[rx];// last three bits
-		if(sgo.vx[4])		fout1 << rank << ";" << zb << endl;
+		if(sgo.vx[4])		fout1 << rank << ";" << zb <<ze<< endl;
 		else {
 			fout1.width(10);
 			fout1 << rank;
-			fout1 << " " << zb << endl;
+			fout1 << " " << zb<<ze << endl;
 
 		}
 	}
@@ -333,218 +249,6 @@ void C5() {// work on skfr output first cut to first / and kill dot
 	}
 	cout << "end of file   " << endl;
 }
-
-// c11 canonical name
-//  1 sud -> r+14
-void C11() {
-	cout << " C11_ find canonical for a file of sudokus sgo.vx[4]= " << sgo.vx[4] << endl;
-	char* ze = finput.ze,zem[82],zes[200], zem2[82]; zem[81] = 0; zem2[81] = 0;
-	int smin[81];
-	ptpgc= SkbsSetModeWithAutos();
-	pzhe= SkbfGetZhePointer();
-	int* vv = pzhe->gsol;
-	if (SkvcatSetModeGetVCDESK(2, &pvcdesc)) {
-		cout << " set mode failed" << endl;
-		return;
-	}
-	while (finput.GetLigne()) {
-		if (sgo.vx[4] <2 )
-			if (strlen(ze) < 81)continue;// no empty line
-		memcpy(zes, ze, 200);// keep ze for output
-		//============== verbose sudoku ==> can r+14 
-		if (!sgo.vx[4]) {
-			if (SkbfCheckValidityQuick(ze)!= 1) {
-					cout << " invalid puzzle " << endl;	continue;	}
-			SkbsGetMin(vv, smin);
-			uint64_t r = SkvcatGetRankFromSolMin(smin);
-
-			GRIDPERM wgperm;
-			char* pbase = ptpgc->t[0];
-			wgperm.Import19(vv, pbase);
-			wgperm.MorphPuzzle(ze, zem);
-			cout << zem << " puz morphed nt="<< ptpgc->nt << endl;
-			for (int i = 1; i < ptpgc->nt; i++) {// check auto morph get the smallest
-				wgperm.Import19(vv, ptpgc->t[i]);
-				wgperm.MorphPuzzle(ze, zem2);
-				cout << zem2 << " zem2" << endl;
-				register int x = 0;
-				for (; x < 81; x++)if (zem[x] != zem2[x])break;
-				if (x < 81 && zem2[x] == '.') {
-					cout << " new min from auto x="<<x << endl;
-					memcpy(zem, zem2, 81);
-				}
-			}
-			cout << zem << " puz morphed final" << endl;
-
-			char zbit[15]; zbit[14] = 0;
-			PuzzleInBitField(zem, zbit);
-			cout << r << ";" << zbit << " proposal for canonical" << endl;
-		}
-		//========================================= sudoku => can r+14
-		if (sgo.vx[4] == 1) {
-			if (SkbfCheckValidityQuick(ze) != 1) {				
-				cout << ze  << " invalid puzzle "  << endl;
-				continue;
-			}
-			SkbsGetMin(vv, smin);
-			uint64_t r = SkvcatGetRankFromSolMin(smin);
-			cout << "r=" << r << endl;
-			GRIDPERM wgperm;
-			char* pbase = ptpgc->t[0];
-			wgperm.Import19(vv, pbase);
-			wgperm.MorphPuzzle(ze, zem);
-			for (int i = 1; i < ptpgc->nt; i++) {// check auto morph get the smallest
-				wgperm.Import19(vv, ptpgc->t[i]);
-				wgperm.MorphPuzzle(ze, zem2);
-				register int x = 0;
-				for (; x < 81; x++)if (zem[x] != zem2[x])break;
-				if (x < 81 && zem2[x] == '.') memcpy(zem, zem2, 81);				
-			}
-			char zbit[15]; zbit[14] = 0;
-			PuzzleInBitField(zem, zbit);
-			Fout_p_R_Bin(zes, r, zbit);
-
-		}
-		//========================================= can=> sudoku
-		if (sgo.vx[4] == 2) {
-			int i = 0;
-			if (ze[10] == ' ') i = 10;// fix length for r
-			else for (; i < 15; i++)if (ze[i] == ';') break;
-			if (i > 10) {
-				cout<<ze << "not expected format" <<endl;
-				continue;
-			}
-			ze[i] = 0;
-			uint64_t rank= strtoll(ze, 0, 10);
-			char* zeb = &ze[i + 1];
-			int ll =(int) strlen(zeb);
-			if (ll != 14) {
-				cout << "not rigth length"	<< endl;
-				continue;
-			}
-			char zout[82]; zout[81] = 0;
-			char zsol[82]; zsol[81] = 0;
-			//valid to expand
-			if (SkvcatFinSolForRank(rank) < 0) {
-				cout << "rank false" << endl;
-			}
-			else memcpy(zsol, pvcdesc->g.b1, 81);
-			Expand14to81(zout, zeb, zsol); 
-			fout1 << zout << endl;
-			continue;
-		}
-		//======================================== can r+14 =>19
-		if (sgo.vx[4] == 3) {// convert to 19
-			int i = 0;
-			for (; i < 15; i++)if (ze[i] == ';') break;
-			ze[i] = 0;
-			uint64_t rank = strtoll(ze, 0, 10);
-			char* zeb = &ze[i + 1];
-			int  zesi = i + 1 + 14 + 1;
-			char z19[20]; memset(z19, 0, 20);
-			register uint64_t r = rank, r2;
-			{
-				r2 = (r >> 27) & 0x3f; z19[0] = bit6[r2];//  highest bits
-				r2 = (r >> 21) & 0x3f; z19[1] = bit6[r2];
-				r2 = (r >> 15) & 0x3f; z19[2] = bit6[r2];
-				r2 = (r >> 9) & 0x3f; z19[3] = bit6[r2];
-				r2 = (r >> 3) & 0x3f; z19[4] = bit6[r2];
-			}
-			register int rx=(int)r & 7;// last 3  bits
-			for (int i = 0; i < 14; i++) {
-				register int ry = Get6Bits(i, zeb);
-				rx = (rx << 3) | ry &7;
-				z19[i + 5] = bit6[rx];
-				rx = ry >>3;
-			}
-			if (sgo.vx[5] == 1)fout1 <<  z19 << ";" << zes << endl;
-			else fout1 << z19 << endl;
-			continue;
-		}
-		//===================== 19 to r+14  6x5+3 14x6-3
-		if (sgo.vx[4] == 4) {// convert to 19
-			uint64_t rank=0;
-			for (int i = 0; i < 5; i++) {
-				register int ry = Get6Bits(i, ze);
-				rank = (rank <<= 6) | ry;
-			}
-			register int rx = Get6Bits(5, ze);// 3 bits rank
-			rank = (rank <<= 3) | (rx >> 3);
-			rx &= 7;// residual bits for the 14 bytes field
-			char zb[15]; zb[14] = 0;
-			for (int i = 6; i < 19; i++) {
-				register int ry = Get6Bits(i, ze);
-				rx = rx  | ry&070;
-				zb[i -6] = bit6[rx];
-				rx = ry &7;
-			}
-			zb[13] = bit6[rx];// last three bits
-			fout1<<rank<<";" << zb << endl;
-			continue;
-		}
-		//========================================= sudoku skfr  => can r+14 + sudo + EDxxx
-		if (sgo.vx[4] == 5) {
-
-			if (SkbfCheckValidityQuick(ze) != 1) {
-				cout << ze << " invalid puzzle " << endl;
-				continue;
-			}
-			// morph zes to expected output
-			zes[81] = ';';
-			if (zes[86] == '.') {
-				zes[82] = '0'; zes[83] = zes[85]; zes[84] = zes[87];
-			}
-			else {
-				zes[82] = zes[85]; zes[83] = zes[86]; zes[84] = zes[88];
-			}
-			zes[85] = 0;
-			SkbsGetMin(vv, smin);
-			uint64_t r = SkvcatGetRankFromSolMin(smin);
-			GRIDPERM wgperm;
-			char* pbase = ptpgc->t[0];
-			wgperm.Import19(vv, pbase);
-			wgperm.MorphPuzzle(ze, zem);
-			for (int i = 1; i < ptpgc->nt; i++) {// check auto morph get the smallest
-				wgperm.Import19(vv, ptpgc->t[i]);
-				wgperm.MorphPuzzle(ze, zem2);
-				register int x = 0;
-				for (; x < 81; x++)if (zem[x] != zem2[x])break;
-				if (x < 81 && zem2[x] == '.') memcpy(zem, zem2, 81);
-			}
-			char zbit[15]; zbit[14] = 0;
-			PuzzleInBitField(zem, zbit);
-			fout1 << r << ";" << zbit << ";" << zes << endl;
-		}
-		//========================================= can=> sudoku
-		if (sgo.vx[4] == 6) {// keep sol from 10 + x
-			if (ze[10] == ' ')continue;
-			ze[10] = 0;
-			fout1 << ze << endl;
-			continue;
-		}
-		// ======================  more tests
-		if (sgo.vx[4]==10) {
-			cout << ze << " check rank" << endl;
-			uint64_t r = SkvcatGetRankFromSolCharMin(ze);
-			if (!r) {
-				cout << " failed to find rank  " << endl;
-				continue;
-			}
-			cout << " solmin rank  " << r << endl;
-			char zsol[82]; zsol[81] = 0;
-			//valid to expand
-			if (SkvcatFinSolForRank(r) < 0) {
-				cout << "rank false" << endl;
-			}
-			else {
-				memcpy(zsol, pvcdesc->g.b1, 81);
-				cout << zsol << " sol found" << endl;
-			}
-
-		}
-	}
-	cout << "end of file   " << endl;
-}
 int cellsInGroup[27][9] =
 {
 	{ 0, 1, 2, 3, 4, 5, 6, 7, 8},{ 9,10,11,12,13,14,15,16,17},{18,19,20,21,22,23,24,25,26},
@@ -590,8 +294,6 @@ void Go_0() {
 		cerr << "error open file " << sgo.finput_name << endl;
 		return;
 	}
-
-
 	// open  outputs files 1.txt
 	if (!sgo.foutput_name) {
 		cerr << "missing output file root"  << endl; return;
@@ -607,8 +309,6 @@ void Go_0() {
 	}
 
 	cerr << "running command " << sgo.command << endl;
-
-
 	switch (sgo.command) {
 	case 0: C0(); break;// Naming puz
 	case 2: C2(); break;// r+b to 19
