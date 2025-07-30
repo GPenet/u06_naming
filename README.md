@@ -4,7 +4,11 @@ handling canonical names for puzzles
 This repository is created to process names of sudoku puzzles.
 
 In any process working with plenty of sudokus, the same issue appears: Is this sudoku a morph of a previous one.
-Cleaning the redundancy is important to save processing time to build the final result
+Cleaning the redundancy is important 
+
+to save processing time 
+
+to build the final result
 
 to avoid redundancy, the classical way is to use a "canonical morph of the entry". For a solution grid, the most common canonical morph is the min lexical form of the solution grid.
 
