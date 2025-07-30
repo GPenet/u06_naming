@@ -43,9 +43,46 @@ The corresponding DLLs must be in a directory used to load programs.
 
 ====================================================================
 
-the package functions are using my "standard" frame and have usually one entry file, one output file and a possible redirection of cout where can be seen a short message if the process fails.
+the package functions are using my "standard" frame and have usually one entry file, one output file and a possible redirection of "cout" where can be seen a short message if the process fails.
 
 As this is mainly for steps in a wider process, the entry file must fit with the process called and the process stops in case of anomaly seen.
+
+The command line will have some common parameters for all functions as in this line
+
+sku06_names -c5  -v4-2 -i_tmissingsp_rat.txt    -o_tmo2   >_tmo2.txt  "skfred to p er r b"
+
+sku06_names for theprogram sku06_names.exe
+
+-cn where n is the function id 
+
+-v4-p an optional parameter (default 0) needed in some functions
+
+-ixxx where xxx is the file name here _tmissingsp_rat.txt 
+
+-oyyyy thhe root file name for output; here the output will be yyy_file1.txt (only one file in output)
+
+>zzz redirection for the "cout" file
+
+==================================================================
+function -c1
+
+entry any valid puzzle 
+
+output name  in fix format "rrrrrrrrrr bbbbbbbbbbbbbb" length 10+1+14=25
+
+-v4-n is an optional output format modifier
+
+-v4-1 output "r;bbbb" where the rank r has a variable length
+
+-v4-2 output "p;r;bbbb" where the puzzle in minlex morph is in output
+
+The process is cancelled if a wrong puzzle is seen 
+To limit the risk of an endless brute force
+
+
+
+
+
 
 
 
