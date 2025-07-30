@@ -95,7 +95,51 @@ standard output name  in fix format "rrrrrrrrrr bbbbbbbbbbbbbb" length 10+1+14=2
 
   convert rank + bit field to 19 bytes
 
+  entry file must be 10+1+14  or rank;bitfield
   
+  out file is name 19;entry 
+
+  This process could have entries where rank;bitfile should be replaced but the use is not yet identified
+  
+
+  ==============================================================
+  function -c3
+
+  convert name  19 bytes to rank plus bit field
+
+  as for the process 3, this is a "test code" with an entry file of names 19 and an output having the rank+bitf followed bay the entry.
+
+the standard output is 10+1+14
+
+the output is rank;bitf is -v4-n is in the command line
+
+=================================================================
+
+function -c4   
+
+this process delivers the puzzle in min lex morphfor a given name 10+1+14 or rank;bitf.
+
+Some runtime can be saved using the output puz;rank;name in the process -c1. In the vicinity search, names are used to clear redundancy, then new puzzles are rated. One problem is that SKFR loose the name linked to the puzzle, so another way (data base) must be used to match the records.
+
+function -c4 is relatively expensive, but can go back from the name to the puzzle.
+
+==================================================================
+
+function -c5
+
+this is a tailor made function to go from skfr output (assumed to be done using a canonical puzzle) to the record to save.
+here a typical output of skfr and the expected output
+.....67.....18.26.....27.412.4.......9...8...831.7......6.4287......1....4..6..12 ED=11.0/8.4/2.6
+.....67.....18.26.....27.412.4.......9...8...831.7......6.4287......1....4..6..12;110;5411131853;W1Rmk0Yu2q34I6
+
+110 is for 11.0
+
+then comes the rank and the name.
+
+
+
+  
+
 
 
 
