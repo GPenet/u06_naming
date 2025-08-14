@@ -61,7 +61,7 @@ void Expand14to81(char* puz, char* bf14, char * sol) {
 
 //============================================================================================ processes
 void C0() {
-	cout << " C0_ find canonical for a file of sudokus sgo.vx[5]= " << sgo.vx[5] << endl;
+	cout << " C0_ find canonical for a file of sudokus sgo.vx[4]= " << sgo.vx[4] << endl;
 	char* ze = finput.ze, zem[82], zes[200], zem2[82]; zem[81] = 0; zem2[81] = 0;
 	int smin[81];
 	ptpgc = SkbsSetModeWithAutos();
@@ -105,7 +105,86 @@ void C0() {
 	cout << "end of file   " << endl;
 }
 
-void C1() {}
+
+struct NAMEB {
+	char bf[14];
+}tnames[30000];// tables of names in entry
+BF128 tp128[30000]; // same in bf 128
+struct NAMEI {
+	uint64_t r;
+	NAMEB bf;
+};
+struct WW {// shared data 
+	BF128 puzbf, psinglesx, pnsinglesx, x, andw;
+	BF128 myp, pout;
+	NAMEI wni;
+	uint64_t cursol;
+	char* ze, wout[82], ws[82];
+	char solc[82]; // grid in char mode
+	int  grid[81], sB[81], * sX,// sX current grid in calls
+		endofentry,
+		ntnames, // number of names loaded 
+		ntmin,// number of minimel grids
+		cell;// working cell
+}ww;
+int ValidGetLigne() {
+	while (finput.GetLigne()) {
+		if (strlen(ww.ze) > 25 || strlen(ww.ze) < 16) {
+			cout << "bad entry" << endl; return 0;
+		}
+		int i = 0;
+		if (ww.ze[10] == ' ') i = 10;// fix length for r
+		else for (; i < 15; i++)if (ww.ze[i] == ';') break;
+		if (i > 10) { cout << ww.ze << "not expected format" << endl; return 0; }
+		char* zeb = &ww.ze[i + 1];
+		int ll = (int)strlen(zeb);
+		if (ll != 14) { cout << "not rigth length" << endl;		return 0; }
+		ww.ze[i] = 0;
+		ww.wni.r = strtoll(ww.ze, 0, 10);
+		memcpy(ww.wni.bf.bf, zeb, sizeof ww.wni.bf);
+		return 1;
+	}
+	ww.endofentry = 1;
+	return 0;
+}
+int NewSol() {
+	if (ww.endofentry) return 0;
+	ww.ntnames = 1; tnames[0] = ww.wni.bf;
+	ww.cursol = ww.wni.r;
+	if (SkvcatFinSolForRank(ww.cursol) < 0) { cout << ww.cursol << "rank false" << endl; return 0; }
+	else memcpy(ww.solc, pvcdesc->g.b1, 81);
+	for (int i = 0; i < 81; i++) ww.grid[i] = ww.solc[i] - '1';
+	while (ValidGetLigne()) {
+		if (ww.cursol == ww.wni.r)tnames[ww.ntnames++] = ww.wni.bf;
+		else break;
+	}
+	return ww.ntnames;
+}
+
+void C1() {
+	cout << " C1_  name to puz by sol grid" << endl;
+	if (SkvcatSetModeGetVCDESK(2, &pvcdesc)) { cout << " set mode failed" << endl;		return; }
+	char ws[82]; ws[81] = 0;
+	int x = sgo.vx[5];
+	ww.ze = finput.ze;
+	ww.wni.r = 0; ww.endofentry = 0;
+	if (!ValidGetLigne()) {
+		cout << "no entry or invalid entry)" << endl;  return;
+	}
+	while (NewSol()) {
+		cout << ww.solc << " " << ww.ntnames << " puz sol " << ww.cursol << endl;
+		//continue;
+		for (int inn = 0; inn < ww.ntnames; inn++) {
+			NAMEB wname = tnames[inn];
+			char wp[82]; wp[81] = 0;
+			Expand14to81(wp, wname.bf, ww.solc);// now puzzle wp	
+			fout1 << wp << ";" << ww.cursol << ";" << wname.bf << endl;
+		}
+
+	}
+	
+}
+
 void C2() {
 	cout << " C2_ convert r+b to 19"  << endl;
 	char* ze = finput.ze; 
@@ -215,10 +294,6 @@ void C5() {// work on skfr output first cut to first / and kill dot
 	while (finput.GetLigne()) {
 		if (strlen(ze) < 95)continue;// mini "81"+ " ED=1.2/1.2/1.2"
 		memcpy(zes, ze, 95);// keep ze for process 
-
-		if (SkbfCheckValidityQuick(ze) != 1) {	cout << zes << " invalid puzzle " << endl;	continue;		}
-		uint64_t r = SkvcatGetRankFromSolMin(vv);// we have a min entry
-		if(!r) { cout << zes << " not min lex puzzle " << endl;	continue; }
 		// move the skfr output to puy;ER   entry must have " ED=x.y/" or " ED)1x.y/"
 		if (zes[82] != 'E' || zes[83] != 'D' || zes[84] != '=') {		cout << zes << " not skfr output " << endl;	return;		}
 		int aig = 0;
@@ -242,6 +317,9 @@ void C5() {// work on skfr output first cut to first / and kill dot
 			if (sgo.vx[4] == 2 && zes[83] == '0' && zes[84] < '5')continue; // below 105
 		}
 
+		if (SkbfCheckValidityQuick(ze) != 1) { cout << zes << " invalid puzzle " << endl;	continue; }
+		uint64_t r = SkvcatGetRankFromSolMin(vv);// we have a min entry
+		if (!r) { cout << zes << " not min lex puzzle " << endl;	continue; }
 
 		char zbit[15]; zbit[14] = 0;
 		PuzzleInBitField(zes, zbit);
@@ -311,6 +389,7 @@ void Go_0() {
 	cerr << "running command " << sgo.command << endl;
 	switch (sgo.command) {
 	case 0: C0(); break;// Naming puz
+	case 1: C1(); break;// Name to puz,r,b quick sorted entry
 	case 2: C2(); break;// r+b to 19
 	case 3: C3(); break;// 19 to r+b
 	case 4: C4(); break;// r b / r;b to puz
