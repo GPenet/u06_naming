@@ -88,7 +88,11 @@ standard output name  in fix format "rrrrrrrrrr bbbbbbbbbbbbbb" length 10+1+14=2
 
   =========================
 
-  function -c1 unused
+  function -c1 
+  
+  This is a variant of the process C4 optimal when the entry file is sorted on the solution grid rank.
+  Here the solution grid is searche only once per rank.
+  As this is the longest part of the process, the runtime cal fall down sharply.
 
   ==============================================================
   function -c2
