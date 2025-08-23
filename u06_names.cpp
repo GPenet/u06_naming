@@ -80,7 +80,7 @@ void C0() {
 			cout << ze << "not valid format" << endl;
 			return; 
 		}
-		if (ncell < 18) { cout << ze << "missing clues stop" << endl; return; }
+		if (ncell < 17) { cout << ze << "missing clues stop" << endl; return; }
 		if (SkbfCheckValidityQuick(ze) != 1) { cout << ze << " invalid puzzle " << endl; return; }
 		SkbsGetMin(vv, smin);
 		uint64_t r = SkvcatGetRankFromSolMin(smin);
@@ -108,8 +108,8 @@ void C0() {
 
 struct NAMEB {
 	char bf[14];
-}tnames[30000];// tables of names in entry
-BF128 tp128[30000]; // same in bf 128
+}tnames[50000];// tables of names in entry
+BF128 tp128[50000]; // same in bf 128
 struct NAMEI {
 	uint64_t r;
 	NAMEB bf;
@@ -155,7 +155,9 @@ int NewSol() {
 	else memcpy(ww.solc, pvcdesc->g.b1, 81);
 	for (int i = 0; i < 81; i++) ww.grid[i] = ww.solc[i] - '1';
 	while (ValidGetLigne()) {
-		if (ww.cursol == ww.wni.r)tnames[ww.ntnames++] = ww.wni.bf;
+		if (ww.cursol == ww.wni.r) {
+			if(ww.ntnames<50000)tnames[ww.ntnames++] = ww.wni.bf;
+		}
 		else break;
 	}
 	return ww.ntnames;
