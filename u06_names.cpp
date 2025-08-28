@@ -218,7 +218,9 @@ void C2() {
 			z19[i + 5] = bit6[rx];
 			rx = ry >> 3;
 		}
-		fout1 <<z19<<";" << ze << endl;
+		fout1 << z19;
+		if (sgo.vx[4])fout1 << ";" << ze;
+		fout1 <<endl;
 	}
 	cout << "end of file   " << endl;
 }
