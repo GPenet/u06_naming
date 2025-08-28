@@ -101,10 +101,7 @@ standard output name  in fix format "rrrrrrrrrr bbbbbbbbbbbbbb" length 10+1+14=2
 
   entry file must be 10+1+14  or rank;bitfield
   
-  out file is name 19;entry 
-
-  This process could have entries where rank;bitfile should be replaced but the use is not yet identified
-  
+  out file is  name19 and name 19;entry and if -v4-n is in the command line
 
   ==============================================================
   function -c3
@@ -115,7 +112,7 @@ standard output name  in fix format "rrrrrrrrrr bbbbbbbbbbbbbb" length 10+1+14=2
 
 the standard output is 10+1+14
 
-the output is rank;bitf is -v4-n is in the command line
+the output is rank;bitf if -v4-n is in the command line
 
 =================================================================
 
