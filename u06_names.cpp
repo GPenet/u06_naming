@@ -57,7 +57,15 @@ void Expand14to81(char* puz, char* bf14, char * sol) {
 		}
 	}
 }
-
+inline char * R_toR10(int64_t r) {// put rank in string 10 leading blank
+	static char  ws[11];
+	memset(ws, ' ', 10); ws[10] = 0;
+	if (r > 5472730538) { ws[9] = '0'; return ws; }//5,472,730,538 ED?
+	register uint64_t R = r,W,X;
+	int i = 9;
+	while (R > 0) {	W = R; R /= 10; X = W - 10 * R;	ws[i--] = (char)(X + '0');	}
+	return ws;
+}
 
 //============================================================================================ processes
 void C0() {
@@ -97,10 +105,12 @@ void C0() {
 			if (x < 81 && zem2[x] == '.') memcpy(zem, zem2, 81);
 		}
 		char zbit[15]; zbit[14] = 0;
-		PuzzleInBitField(zem, zbit);
-		fout1.width(10);		fout1 << r;		fout1 << " " << zbit << endl;
+		PuzzleInBitField(zem, zbit);//// R_toR10(r)
+		//fout1.width(10);		fout1 << r;		fout1 << " " << zbit << endl;
+		fout1 << R_toR10(r) << " " << zbit << endl;
 		if (sgo.vx[4])
-			fout2 << zem << ";" << r << ";" << zbit << endl;
+			fout2 << zem << ";" << R_toR10(r) << ";" << zbit << endl;
+		//fout2 << zem << ";" << r << ";" << zbit << endl;
 	}
 	cout << "end of file   " << endl;
 }
@@ -180,7 +190,8 @@ void C1() {
 			NAMEB wname = tnames[inn];
 			char wp[82]; wp[81] = 0;
 			Expand14to81(wp, wname.bf, ww.solc);// now puzzle wp	
-			fout1 << wp << ";" << ww.cursol << ";" << wname.bf << endl;
+			//fout1 << wp << ";" << ww.cursol << ";" << wname.bf << endl;// R_toR10( ww.cursol)
+			fout1 << wp << ";" << R_toR10(ww.cursol) << ";" << wname.bf << endl; 
 		}
 
 	}
@@ -245,6 +256,10 @@ void C3() {
 			rx = ry & 7;
 		}
 		zb[13] = bit6[rx];// last three bits
+		char* r10 = R_toR10(rank);
+		char x = (sgo.vx[4]) ?  ';' : ' ';
+		fout1 << r10 << x << zb << ze << endl;
+		/*
 		if(sgo.vx[4])		fout1 << rank << ";" << zb <<ze<< endl;
 		else {
 			fout1.width(10);
@@ -252,6 +267,7 @@ void C3() {
 			fout1 << " " << zb<<ze << endl;
 
 		}
+		*/
 	}
 	cout << "end of file   " << endl;
 }
@@ -281,7 +297,8 @@ void C4() {// find sudoku out puz or puz;r;bitf  filter option <10 or <10.5
 		else memcpy(zsol, pvcdesc->g.b1, 81);
 		Expand14to81(zout, zeb, zsol);
 		fout1 << zout;
-		if (sgo.vx[4]) fout1 << ";" << rank << ";" << zeb;
+		//if (sgo.vx[4]) fout1 << ";" << rank << ";" << zeb;//<< R_toR10(r)
+		if (sgo.vx[4]) fout1 << ";" << R_toR10(rank) << ";" << zeb; 
 		fout1 << endl;
 	}
 	cout << "end of file   " << endl;
@@ -320,17 +337,59 @@ void C5() {// work on skfr output first cut to first / and kill dot
 			if (!zes[84])continue; // below 100
 			if (sgo.vx[4] == 2 && zes[83] == '0' && zes[84] < '5')continue; // below 105
 		}
-
+		if (sgo.vx[6]) {// not minimal just 
+			fout1 << zes << endl; continue;
+		}
 		if (SkbfCheckValidityQuick(ze) != 1) { cout << zes << " invalid puzzle " << endl;	continue; }
 		uint64_t r = SkvcatGetRankFromSolMin(vv);// we have a min entry
 		if (!r) { cout << zes << " not min lex puzzle " << endl;	continue; }
 
 		char zbit[15]; zbit[14] = 0;
 		PuzzleInBitField(zes, zbit);
-		fout1 << zes << ";" << r << ";" << zbit << endl;
+		//fout1 << zes << ";" << r << ";" << zbit << endl;
+		fout1 << zes << ";" << R_toR10(r) << ";" << zbit << endl;
 	}
 	cout << "end of file   " << endl;
 }
+
+
+void C6() {// work on skfr output first cut to first / and kill dot
+	// entry must be here a puzzle in minimal morph
+	cout << " C6_ special ysfgsf skfr output -> puz+ER  select on  sgo.vx[4]= " << sgo.vx[4] << " default 10.0=100" << endl;
+	if (!sgo.vx[4]) sgo.vx[4] = 100;
+	if (sgo.vx[4] < 45 || sgo.vx[4]>105) { cout << "not expected filter sgo.vx[4]" << endl; return; }
+	char* ze = finput.ze, zes[100]; zes[95] = 0;
+	ptpgc = SkbsSetModeWithAutos();
+	pzhe = SkbfGetZhePointer();
+	int* vv = pzhe->gsol;
+	if (SkvcatSetModeGetVCDESK(2, &pvcdesc)) { cout << " set mode failed" << endl;		return; }
+	while (finput.GetLigne()) {
+		if (strlen(ze) < 95)continue;// mini "81"+ " ED=1.2/1.2/1.2"
+		memcpy(zes, ze, 95);// keep ze for process 
+		// move the skfr output to puy;ER   entry must have " ED=x.y/" or " ED)1x.y/"
+		if (zes[82] != 'E' || zes[83] != 'D' || zes[84] != '=') { cout << zes << " not skfr output " << endl;	return; }
+		int aig = 0,vf=0;
+		for (int i = 85; i < 91; i++) {
+			if (zes[i] == '/') {
+				zes[i - 2] = zes[i - 1];
+				zes[i - 1] = 0;
+				aig = i;// new point to add 
+				break;
+			}
+		}
+		if (!aig) { cout << zes << " not skfr slash " << endl;	return; }
+		// kill " ED="
+		zes[81] = ';';
+		for (int i = 82; i < 86; i++) 	zes[i] = zes[i + 3];
+
+		// filter on ER  <10.0 or given limit sgo.vx[4]
+		vf = atoi(&zes[82]);
+		if (vf < 45) { cout << " stop vf below 45" << endl; return; }
+		if (vf<=(int)sgo.vx[4]) fout1 << zes  << endl;
+	}
+	cout << "end of file   " << endl;
+}
+
 int cellsInGroup[27][9] =
 {
 	{ 0, 1, 2, 3, 4, 5, 6, 7, 8},{ 9,10,11,12,13,14,15,16,17},{18,19,20,21,22,23,24,25,26},
@@ -398,6 +457,7 @@ void Go_0() {
 	case 3: C3(); break;// 19 to r+b
 	case 4: C4(); break;// r b / r;b to puz
 	case 5: C5(); break;// skfr ed to p er r b
+	case 6: C6(); break;// skfr ed  yzfgsf filter
 
 	}
 	cerr << "go_0 return" << endl;
