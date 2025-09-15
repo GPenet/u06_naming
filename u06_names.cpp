@@ -202,7 +202,7 @@ void C2() {
 	cout << " C2_ convert r+b to 19"  << endl;
 	char* ze = finput.ze; 
 	while (finput.GetLigne()) {
-		if (strlen(ze) < 25)continue;// no empty line
+		if (strlen(ze) < 15)continue;// no empty line
 		int i = 0;
 		if (ze[10] == ' ') i = 10;// fix length for r
 		else for (; i < 15; i++)if (ze[i] == ';') break;
@@ -258,7 +258,7 @@ void C3() {
 		zb[13] = bit6[rx];// last three bits
 		char* r10 = R_toR10(rank);
 		char x = (sgo.vx[4]) ?  ';' : ' ';
-		fout1 << r10 << x << zb << ze << endl;
+		fout1 << r10 << x << zb << endl;
 		/*
 		if(sgo.vx[4])		fout1 << rank << ";" << zb <<ze<< endl;
 		else {
