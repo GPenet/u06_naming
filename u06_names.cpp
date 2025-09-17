@@ -118,8 +118,8 @@ void C0() {
 
 struct NAMEB {
 	char bf[14];
-}tnames[50000];// tables of names in entry
-BF128 tp128[50000]; // same in bf 128
+}tnames[200000];// tables of names in entry
+BF128 tp128[200000]; // same in bf 128
 struct NAMEI {
 	uint64_t r;
 	NAMEB bf;
@@ -166,7 +166,7 @@ int NewSol() {
 	for (int i = 0; i < 81; i++) ww.grid[i] = ww.solc[i] - '1';
 	while (ValidGetLigne()) {
 		if (ww.cursol == ww.wni.r) {
-			if(ww.ntnames<50000)tnames[ww.ntnames++] = ww.wni.bf;
+			if(ww.ntnames<200000)tnames[ww.ntnames++] = ww.wni.bf;
 		}
 		else break;
 	}
