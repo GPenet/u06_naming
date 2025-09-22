@@ -137,6 +137,13 @@ here a typical output of skfr and the expected output
 
 then comes the rank and the name.
 
+================= function c6
+not really naming, but variant of c5 for skfr output without the need of the solution grid rank (can be not min lexical puzzle)
+-v4- gives the max ER to select (45 to 119, default 100)
+
+================= function c7
+
+forcing a rank;bitfield to a 10+1+14 toutput.
 
 
   
