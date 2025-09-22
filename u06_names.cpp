@@ -108,8 +108,13 @@ void C0() {
 		PuzzleInBitField(zem, zbit);//// R_toR10(r)
 		//fout1.width(10);		fout1 << r;		fout1 << " " << zbit << endl;
 		fout1 << R_toR10(r) << " " << zbit << endl;
-		if (sgo.vx[4])
-			fout2 << zem << ";" << R_toR10(r) << ";" << zbit << endl;
+		if (sgo.vx[4]) {
+			if (sgo.vx[4] == 10) {// source plus name
+				ze[81] = 0;
+				fout2 << ze << ";" << R_toR10(r) << ";" << zbit << endl;
+			}
+			else fout2 << zem << ";" << R_toR10(r) << ";" << zbit << endl;
+		}
 		//fout2 << zem << ";" << r << ";" << zbit << endl;
 	}
 	cout << "end of file   " << endl;
@@ -280,7 +285,7 @@ void C4() {// find sudoku out puz or puz;r;bitf  filter option <10 or <10.5
 	int* vv = pzhe->gsol;
 	if (SkvcatSetModeGetVCDESK(2, &pvcdesc)) { cout << " set mode failed" << endl;		return; }
 	while (finput.GetLigne()) {
-		if (strlen(ze) < 25)continue;// no empty line
+		if (strlen(ze) < 15)continue;// no empty line
 		int i = 0;
 		if (ze[10] == ' ') i = 10;// fix length for r
 		else for (; i < 15; i++)if (ze[i] == ';') break;
@@ -357,7 +362,7 @@ void C6() {// work on skfr output first cut to first / and kill dot
 	// entry must be here a puzzle in minimal morph
 	cout << " C6_ special ysfgsf skfr output -> puz+ER  select on  sgo.vx[4]= " << sgo.vx[4] << " default 10.0=100" << endl;
 	if (!sgo.vx[4]) sgo.vx[4] = 100;
-	if (sgo.vx[4] < 45 || sgo.vx[4]>105) { cout << "not expected filter sgo.vx[4]" << endl; return; }
+	if (sgo.vx[4] < 45 || sgo.vx[4]>119) { cout << "not expected filter sgo.vx[4]" << endl; return; }
 	char* ze = finput.ze, zes[100]; zes[95] = 0;
 	ptpgc = SkbsSetModeWithAutos();
 	pzhe = SkbfGetZhePointer();
@@ -386,6 +391,29 @@ void C6() {// work on skfr output first cut to first / and kill dot
 		vf = atoi(&zes[82]);
 		if (vf < 45) { cout << " stop vf below 45" << endl; return; }
 		if (vf<=(int)sgo.vx[4]) fout1 << zes  << endl;
+	}
+	cout << "end of file   " << endl;
+}
+
+void C7() {//  push r;bitf   to 10+1+14
+	cout << " C4_ find sudoku min lex from canonical  sgo.vx[4]= " << sgo.vx[4] << endl;
+	char* ze = finput.ze;
+	ptpgc = SkbsSetModeWithAutos();
+	pzhe = SkbfGetZhePointer();
+	int* vv = pzhe->gsol;
+	if (SkvcatSetModeGetVCDESK(2, &pvcdesc)) { cout << " set mode failed" << endl;		return; }
+	while (finput.GetLigne()) {
+		if (strlen(ze) < 15)continue;// no empty line
+		int i = 0;
+		if (ze[10] == ' ') i = 10;// fix length for r
+		else for (; i < 15; i++)if (ze[i] == ';') break;
+		if (i > 10) { cout << ze << "not expected format" << endl; return; }
+		char* zeb = &ze[i + 1];
+		int ll = (int)strlen(zeb);
+		if (ll != 14) { cout << "not rigth length" << endl;		return; }
+		ze[i] = 0;
+		uint64_t rank = strtoll(ze, 0, 10);
+		fout1  << R_toR10(rank) << " " << zeb << endl;
 	}
 	cout << "end of file   " << endl;
 }
@@ -458,6 +486,7 @@ void Go_0() {
 	case 4: C4(); break;// r b / r;b to puz
 	case 5: C5(); break;// skfr ed to p er r b
 	case 6: C6(); break;// skfr ed  yzfgsf filter
+	case 7: C7(); break;// name r;b to name 10+1+14
 
 	}
 	cerr << "go_0 return" << endl;
